@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### geninstaller - generates a generic YAML install file for WINE games
+
+### TODO
+## So many things are possible, but at some point you'll end up reinventing Lutris
+## This will use the default Lutris paths
+
+## Set default for IFS to something else to prevent stripping of newlines in template - yaml must be preserved!
+IFS="~~~"
+
+## Required arg
+if [ $# -ne 1 ];then
+  echo "Please only enter a gametag as an argument (no spaces, alpha, numbers and dashes only as delimiters), e.g. geninstaller old-shooter"
+  exit 1
+fi
+
+## Check for bogus chars..by excluding the valid ones
+if [ `echo "$1" | grep -vn "^[a-zA-Z0-9-]*$" | wc -l` -ne 0 ];then
+  echo "Some weird special characters in your argument - only alpha, numbers, dashes allowed!"
+  exit 1
+fi
+
+## YAML data for Lutris generic installer
+read -r -d '' yamldata << EOF
+description: Manual game install
+game_slug: manual-install
+installer_slug: manual-install
+name: manual-install
+notes: 'Select the installer EXE. Installs with default WINE runner. Re-configure the game executable after running the installer.'
+runner: wine
+script:
+  files:
+  - installfile: N/A:Please select the installer
+  installer:
+  - task:
+      name: create_prefix
+      prefix: $GAMEDIR
+  game:
+    exe: $GAMEDIR/drive_c/windows/notepad.exe
+    prefix: $GAMEDIR
+  installer:
+  - task:
+      args: /sp- /verysilent /norestart /suppressmsgboxes /nogui
+      executable: $installfile
+      name: wineexec
+      prefix: $GAMEDIR
+slug: manual-install
+version: wine-game
+year: 2024
+EOF
+
+# generate the file
+echo $yamldata | sed -e s/manual-install/${1}/g > ~/$1.yaml

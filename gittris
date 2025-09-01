@@ -1,0 +1,133 @@
+#!/bin/bash
+
+### gittris!
+### Straightforward script to install (and update) two essential gaming tools from GitHub - Lutris and umu-launcher (required for Proton)
+### Obviously this installs the bleeding edge versions of these tools. If your package repository has lutris or umu-launcher, decide which
+### you want. As a rule do not install conflicting tools, it'll make your life hell.
+
+
+# Default to a directory called source in your home
+HOMESRC=~/source
+# Default links for the executable being somewhere in the user's path - ~/.local/bin is usually pulled in by most profiles
+DSTLINK=~/.local/bin
+
+function update_lutris {
+### Download or update Lutris, and add lutris command to user's path
+if [ -d "${HOMESRC}/lutris/.git" ];then
+  cd "${HOMESRC}/lutris"
+  git fetch
+  if [ -z `git status --porcelain` ];then
+    echo "Lutris already up to date"
+    return
+  fi
+  if [ $? -ne 0 ];then
+    echo "git fetch failure - the repo might have disabled anonymous fetching, e.g. require you to set user.name and user.email"
+    echo "update your git global config"
+    exit 1
+  fi
+  git reset --hard HEAD
+  git merge '@{u}'
+else
+  echo "Lutris not found - performing first clone"
+  cd "${HOMESRC}"
+  git clone https://github.com/lutris/lutris.git
+  if [ $? -ne 0 ];then
+    echo "git fetch failure - the repo might have disabled anonymous fetching, e.g. require you to set user.name and user.email"
+    echo "Check the failure message above and update your git global config"
+    exit 1
+  fi
+fi
+# link lutris binary to something in our path - variable set above - remove and relink
+if [ -w ${DSTLINK} ];then
+  rm -f "${DSTLINK}/lutris"
+  ln -s "${HOMESRC}/lutris/bin/lutris" "${DSTLINK}/lutris"
+else
+  echo "Cannot write to ${DSTLINK} - please change permissions so your user can update the link to lutris"
+  exit 1
+fi
+}
+
+function update_umu {
+## Download or update umu-launcher and link umu-run into user's path
+# Update2 - umu-launcher moved to new GitHub
+# old build used to: "sudo ./configure.sh --prefix=/usr"
+if [ -d "${HOMESRC}/umu-launcher/.git" ];then
+  cd "${HOMESRC}/umu-launcher"
+  git fetch
+  if [ -z `git status --porcelain` ];then
+    echo "Umu-launcher already up to date"
+    return
+  fi
+  echo "Running clean (quietly)"
+  make clean 1>>/dev/null
+  rm -rf ${HOMESRC}/umu-launcher/usr
+  if [ $? -ne 0 ];then
+    echo "git fetch failure - the repo might have disabled anonymous fetching, e.g. require you to set user.name and user.email"
+    exit 1
+  fi
+  git reset --hard HEAD
+  git merge '@{u}'
+  ./configure.sh --user-install
+  echo "Running make (quietly)"
+  make 1>>/dev/null
+  if [ $? -ne 0 ];then
+    echo "Error running build - recommend checking manually, then run make install"
+    exit 1
+  fi
+  make install
+else
+  echo "umu-launcher not found - performing first clone"
+  cd "${HOMESRC}"
+  git clone https://github.com/Open-Wine-Components/umu-launcher.git
+  if [ $? -ne 0 ];then
+    echo "git clone failure - the repo might have disabled anonymous access, e.g. require you to set user.name and user.email"
+    exit 1
+  fi
+  cd umu-launcher
+  ./configure.sh --user-install
+  echo "Running make (quietly)"
+  make 1>>/dev/null
+  if [ $? -ne 0 ];then
+    echo "Error running build - check source/umu-launcher, fix errors, then run make install"
+    exit 1
+  fi
+  make install
+fi
+}
+
+if [ `echo $PATH | grep $DSTLINK >/dev/null; echo $?` -ne 0 ];then
+  echo "Warning: Link destination not found in PATH - might want to change DSTLINK in script"
+fi
+
+# Run with options
+if [ $# -gt 0 ];then
+  case $1 in
+    "-updatelutris") update_lutris ;;
+    "-updateumu") update_umu ;;
+    "-updateall") update_lutris ; update_umu ;;
+    "-help") echo "Options are one of [-updatelutris|-updateumu|-updateall|-help]" ; exit 0 ;;
+    "*") echo "Unknown option" ; exit 1 ;;
+  esac
+else
+  echo "Options are one of [-updatelutris|-updateumu|-updateall|-help]" 
+  exit 0
+fi
+
+echo ""
+echo "Default installation paths:"
+echo "tool source code downloads: ${HOMESRC}"
+echo "user path for binary links: ${DSTLINK}"
+
+if [ ! -d "${HOMESRC}" ];then
+  mkdir "${HOMESRC}"
+  echo "Created a source directory ${HOMESRC} for you. Change the variable if you want it located elsewhere"
+fi
+
+if [ ! -d "${DSTLINK}" ];then
+  mkdir "${DSTLINK}"
+  if [ $? -ne 0 ];then
+    echo "Error locating/creating a link directory. Check permissions on ${DSTLINK} - anywhere other than your home and you will need to create it with root and give it permissions for you to write to it"
+    exit 1
+  fi
+  echo "Created a link directory. Change the variable at the top of the script if you want it located elsewhere. Also, make sure it is in your PATH (e.g. sourced in by profiles)"
+fi

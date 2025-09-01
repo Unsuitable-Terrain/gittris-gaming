@@ -1,0 +1,107 @@
+#!/bin/bash
+#
+# The idea behind this is to fix up the Lutris VICE runner (3.1) by linking in a more modern one you built
+# It won't do the compile for you - you need to fix that up yourself
+# Anything newer than 3.3 also means the -sdl2renderer flag in the python needs to be removed
+# Also on ./configure, handle whether user includes the old x64 (--enable-x64)
+
+## Defaults:
+# /usr/share/local/vice/* - VICE files, roms etc from the VICE archive - System path, will have files if you installed from package
+# $HOME/.local/share/local/vice/* - VICE files, roms etc from the VICE archive - User path
+# $SOURCEDIR/data - where the ROMS etc are, need to be copied to the proper locations to make VICE work
+# $HOME/.local/share/lutris/runners - Lutris default runner location - it will download and extract the stock VICE runner here
+
+## TODO
+# Accept parameters for input source directory, path validation etc.
+# User params for whether to install per user (which better supports flatpak etc.)
+# More checks, system package, ownership checks etc. There are always more checks
+
+## Variables
+# the VICE you compiled
+SOURCEDIR="$HOME/source/vice-3.8"
+# where lutris puts its VICE binaries
+LUTRISVICE="$HOME/.local/share/lutris/runners/vice/bin"
+# System VICE support files
+SYSVICE="/usr/local/share/vice"
+# User VICE support files
+USERVICE="$HOME/.local/share/vice"
+
+## EDITME
+if [ -z ~/.lutrisvicerun ];then
+  echo "Firstrun! Please check the variables, then touch ~/.lutrisvicerun"
+  exit 0
+fi
+
+# Some dir checks
+if [ -z $SOURCEDIR ];then
+  echo "Unable to locate $SOURCEDIR - need to know where you built VICE this time!"
+  exit 1
+fi
+
+if [ -z $SOURCEDIR/src ];then
+  echo "No src subdirectory in $SOURCEDIR - did you build VICE yet? (For instructions, see doc/building/Linux-GTK3-Howto.txt)"
+  exit 1
+fi
+
+if [ -z $SOURCEDIR/src/x64sc ];then
+  echo "x64sc build not found in $SOURCEDIR - did VICE build? (For instructions, see doc/building/Linux-GTK3-Howto.txt)"
+  exit 1
+fi
+
+if [ -z $HOME/.local/share/lutris/runners/vice ];then
+  echo "Lutris VICE runner not installed - recommend you install it first or it will overwrite this"
+  exit 1
+fi
+
+# Did you already run this?
+if [ `find $LUTRISVICE -maxdepth 1 -type l | wc -l` -ne "0" ];then
+  echo "Links already established in $LUTRISVICE - did you run this already? Clean out links from $LUTRISVICE to re-run"
+  exit 1
+fi
+
+# Check and create default dirs
+if [ ! -d $SYSVICE ];then
+  echo "System VICE file path does not exist - needs sudo to create..."
+  sudo mkdir $SYSVICE
+fi
+
+if [ ! -d $USERVICE ];then
+  echo "User VICE file path does not exist ...create..."
+  mkdir $USERVICE
+fi
+
+# Move the lutris runner files (compiled against old libs etc which probably aren't in your distro anymore)
+mkdir $LUTRISVICE/lutrisOldViceFiles
+mv -f $LUTRISVICE/* $LUTRISVICE/lutrisOldViceFiles
+
+# If new vice doesn't compile old x64, only x64sc, duplicate that as lutris uses x64
+if [ -a "$SOURCEDIR/src/x64" ];then
+  ln -s $SOURCEDIR/src/x64 $LUTRISVICE/x64
+else
+  ln -s $SOURCEDIR/src/x64sc $LUTRISVICE/x64
+fi
+
+# remove and relink utils
+rm -f $LUTRISVICE/petcat $LUTRISVICE/cartconv
+ln -s $SOURCEDIR/src/tools/petcat/petcat $LUTRISVICE/petcat
+ln -s $SOURCEDIR/src/tools/cartconv/cartconv $LUTRISVICE/cartconv
+
+# Link in your spangly new files, except the tools and x64
+for spam in `ls $LUTRISVICE/lutrisOldViceFiles`;do
+  if [ "${spam}" != "x64" ] && [ "${spam}" != "petcat" ] && [ "${spam}" != "cartconv" ] ;then
+    ln -s $SOURCEDIR/src/${spam} $LUTRISVICE/${spam}
+  fi
+done
+
+echo "File links done."
+
+cp -r $SOURCEDIR/data/* $USERVICE/
+sudo cp -r $SOURCEDIR/data/* $SYSVICE/
+
+touch ~/.lutrisvicerun
+
+echo "Support file copy done"
+echo "You will need to edit the python in Lutris (lutris/runners/vice.py)"
+echo "About line ~207, remove the 3 line block starting: if self.runner_config.get(renderer):"
+echo "and the next 3 line block starting: if not self.runner_config.get(aspect_ratio, True):"
+echo "VICE run games for Lutris should now work!"
