@@ -103,6 +103,8 @@ Winetricks has many options available at the click of a button for you, and a lo
 
 There is a usually a verison of winetricks that can be installed from your distribution's repository. Typically those are out of date very fast, but you can run `winetricks --self-update` and it will pull the latest verison from GitHub. It contains sources and checksums for many popular Microsoft downloads, so needs a check every few months or so.
 
+Winetricks caches downloads for reuse (~/.cache/winetricks) so disk use can grow a bit without you realising!
+
 
 <div id='variablesandmultislot' />
 
@@ -146,11 +148,14 @@ For example, you might know of some 32 bit software, and decide to put it in a 6
 
 <div id='commonapps' />
 
-## *How do I install common Windows apps into a WINE prefix?*
-To be honest, the best and quickest way is to use [winetricks](https://github.com/Winetricks/winetricks)
-- Winetricks allows you to easily and quickly install DLLs, common software (like .NET, or Visual C Runtime, the all-important DXVK) fonts and settings (like windows version) into any prefix.
-- Winetricks is a shell script, but can run in the user context.
-- Winetricks caches downloads for reuse (~/.cache/winetricks) so disk use can grow a bit without you realising!
+## *How do I install common Windows features like Visual C runtime into a WINE prefix?*
+To be honest, the best and quickest way is to use winetricks, especially for things like .NET (see above.)
+
+However, there is nothing stopping you downloading and running the setup using WINE, for example: -
+```
+WINEPREFIX=$HOME/myapplicationprefix wine Downloads/somesetup.exe
+```
+
 
 <div id='dlloverides' />
 
