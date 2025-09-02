@@ -78,7 +78,7 @@ You can also prefix the prefix to every wine command... *WINEPREFIX=$HOME/mynewp
 <div id='usingprefixes' />
 
 ## *How do I interact with an existing WINE prefix?*
-Again, set the WINEPREIX variable to its directory, so any WINE-related commands after that will be executed in that prefix.
+Again, set the WINEPREFIX variable to its directory, so any WINE-related commands after that will be executed in that prefix.
 So if you did...
 ```
 export WINEPREFIX=/home/user/myprefix
@@ -88,16 +88,18 @@ wine winecfg
 
 <div id='whatiswinetricks' />
 Winetricks is a scripting tool that allows you to install common features into WINE prefixes without much hassle. Because it is a script, it can be used to customise or build prefixes with ease.
-It has a UI and all you need to do is set WINEPREFIX, run winetricks, select the prefix, and you have a bunch of common options that allow you to install things or change your prefix.
 
-For example, to install .NET4.8 in a WINEPREFIX you'd need to manually do download and install it.
-Winetricks does that for you - and a lot more besides. Here's a short list of things: -
+It has a UI, so all you need to do is set WINEPREFIX, then run winetricks. 
+Select the prefix, and then one of the common options that allow you to install things or change your prefix.
+
+For example, to manually install .NET4.8 in a WINEPREFIX you'd need to download and install it.
+Winetricks has that and many other options available at the click of a button for you, and a lot more besides. Here's a short list of common things: -
 - dotNet 4+
 - DXVK for gaming
 - VisualC Runtimes
 - DLL workarounds
 
-There is a usually a verison of it in your distribution's repository, and although typically those are out of date very fast, the script can be told to --self-update and will pull the latest verison from GitHub. It contains sources and checksums for many popular Microsoft downloads, so needs a check every few months or so.
+There is a usually a verison of winetricks that can be installed from your distribution's repository. Typically those are out of date very fast, but you can run `winetricks --self-update` and it will pull the latest verison from GitHub. It contains sources and checksums for many popular Microsoft downloads, so needs a check every few months or so.
 
 
 <div id='variablesandmultislot' />
