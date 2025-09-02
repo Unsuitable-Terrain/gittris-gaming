@@ -116,24 +116,24 @@ Can install them yourself, or use the handy "gittris" script in this very repo!
 
 ### Automagic git install, assuming you trust my script
 ```
-mkdir ~/source && cd ~/source && git clone https://github.com/jmczab/git-tris
+mkdir ~/source && cd ~/source && git clone https://github.com/Unsuitable-Terrain/gittris-gaming
 ~/source/git-tris/gittris
 ```
 
-### Manual git install, if you don't trust my script :)
-Create a directory for your git clone. Pull in, link in to somewhere in your PATH
+### Manual install, if you don't trust my script :)
+TL;DR: Create a directory for your git clone. Pull Lutris, then link in to somewhere in your PATH
 ```
 mkdir ~/mygitstuff && cd ~/mygitstuff && git clone https://github.com/lutris/lutris.git
 sudo ln -s ~/mygitstuff/lutris/bin/lutris /usr/local/bin/lutris
 ```
-Install Git umu-launcher so Lutris can access and use Steam protons - preferred over the static version, as updating git keeps them in step
+Install Git umu-launcher so Lutris can access and use Steam protons - which are much preferred over the automatic versions, as updating keeps them in step
 ```
 cd ~/mygitstuff && git clone https://github.com/Open-Wine-Components/umu-launcher.git
 cd ~/mygitstuff/umu-launcher && ./configure.sh --user-install && make 2>&1 >>/dev/null && make install
 ```
 
 ### Create a Lutris desktop launch item for Git install
-Simple really. Here's an inline script.
+Simple really. Here's an inline script that assumes the main Lutris script has been linked into to your .local/bin
 ```
 IFS="~~~"
 read -r -d '' lutrisDesktop << EOF 
@@ -151,17 +151,16 @@ EOF
 echo ${lutrisDesktop} | sed -e s/userName/`whoami`/g > ~/.local/share/applications/lutris.desktop
 ```
 
-### Add "lutris:" links in browser
-Process will vary per browser, but as a guide, click a Lutris install link from the site, and change it in "applications" or "file types".
+### Add "lutris:" link support in browser
+Process will vary per browser, but as a guide, click a Lutris install link from the site, and then change it in "applications" or "file types" to launch with Lutris.
 
 ## Ready player tux
-System is pretty much ready to install games, and game!
-
+System is pretty much ready to install games! Lutris can link to your GoG, then directly download and install available games. It also runs the BattleNet and Epic game platform clients nicely.
 
 # Optional steps
 
 ## GloriousEgroll's (no, not making that up) custom Proton
-As an alternative to Steam Proton and occasionally better performance in certain games, also grab the latest [GE proton](https://github.com/GloriousEggroll/proton-ge-custom), extract to ~/.steam/root/compatibilitytools.d/ (may need to be created). It is something Lutris does, but you will have to maintain.
+As an alternative to Steam Proton and occasionally better performance in certain games, also grab the latest [GE proton](https://github.com/GloriousEggroll/proton-ge-custom), extract to ~/.steam/root/compatibilitytools.d/ (may need to be created). It is something Lutris also provides, just slightly lagging behind. Just remember you will have to maintain it.
 
 ## Run Lutris, update winetricks
 Lutris downloads a version of winetricks, but obvs there are updates. For the Lutris version
@@ -198,6 +197,6 @@ That about covers the basics. Lutris is ready - just use Runner integration to d
 Steam is installed and will use its own Proton to run games, so your compatibility will be "anything that runs on steam deck" and more!
 
 
-## Final note
+# Final note
 Debian 12 defaults to an older version of the Linux 6 kernel, so will not support bleeding edge hardware.
 You'll need to grab an updated kernel from a reliable source, or build it yourself (for fun and profit.)
