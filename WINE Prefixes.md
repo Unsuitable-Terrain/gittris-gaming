@@ -55,7 +55,7 @@ It is "not an emulator" because it maps functions, rather than providing code (e
 
 <div id='wineprefixes' />
   
-# *What is a WINE prefix and how is it used?*
+## *What is a WINE prefix and how is it used?*
 In short? A prefix is just a directory with supporting files in it, so it looks like a Windows OS.
 - **dosdevices** - symlinks mimicing drives available to the prefix
 - **drive_c** - Obviously containing the C: drive contents
@@ -87,16 +87,17 @@ wine winecfg
 ...it would run the wine configuration panel in that prefix using the system WINE.
 
 <div id='whatiswinetricks' />
-## *What is winetricks?*
-Winetricks is a scripting tool that allows you to install common features into WINE prefixes without much hassle. Because it is a script, it can be used to customise or build prefixes with ease.
 
-It has a UI, so all you need to do is set WINEPREFIX, then run winetricks. 
-Select the prefix, and then one of the common options that allow you to install things or change your prefix.
+## *What is winetricks and how do I use it with WINE?*
 
-For example, to manually install .NET4.8 in a WINEPREFIX you'd need to download and install it.
-Winetricks has that and many other options available at the click of a button for you, and a lot more besides. Here's a short list of common things: -
-- dotNet 4+
-- DXVK for gaming
+Winetricks is a scripting tool that allows you to install common Windows support features into WINE prefixes without much hassle. Because it is a script, it can be used to customise or build your prefixes.
+
+Winetricks has a UI, and all it needs is a WINEPREFIX, then run it.
+Select a prefix, and in the next panel, the common options allow you to install things, or change your prefix.
+
+Winetricks has many options available at the click of a button for you, and a lot more besides. Here's a short list of common things: -
+- DotNet 4+
+- DXVK (for gaming support)
 - VisualC Runtimes
 - DLL workarounds
 
