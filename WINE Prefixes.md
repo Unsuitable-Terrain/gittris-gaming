@@ -87,6 +87,7 @@ wine winecfg
 ...it would run the wine configuration panel in that prefix using the system WINE.
 
 <div id='whatiswinetricks' />
+## *What is winetricks?*
 Winetricks is a scripting tool that allows you to install common features into WINE prefixes without much hassle. Because it is a script, it can be used to customise or build prefixes with ease.
 
 It has a UI, so all you need to do is set WINEPREFIX, then run winetricks. 
