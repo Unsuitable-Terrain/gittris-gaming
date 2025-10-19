@@ -57,9 +57,37 @@ It is "not an emulator" because it maps functions, rather than providing code (e
   
 ## *What is a WINE prefix and how is it used?*
 In short? A prefix is just a directory with supporting files in it, so it looks like a Windows OS.
-- **dosdevices** - symlinks mimicing drives available to the prefix
 - **drive_c** - Obviously containing the C: drive contents
 - **various reg files** - mimicing the registry and storing Windows settings
+- **dosdevices** - symbolic links that mimic Windows drives and devices in here are made available inside the prefix
+
+Here's an example, where the Prefix has been set up and has some familiar Windows directories: -
+```[user@workstation WINE]$ find my-wine-game -maxdepth 2 -type d
+my-wine-game
+my-wine-game/drive_c
+my-wine-game/drive_c/vrclient
+my-wine-game/drive_c/Program Files (x86)
+my-wine-game/drive_c/ProgramData
+my-wine-game/drive_c/users
+my-wine-game/drive_c/openxr
+my-wine-game/drive_c/windows
+my-wine-game/drive_c/Games
+my-wine-game/drive_c/Program Files```
+You can copy files straight into those directories if you need to, but remember that it is "Windows" so you should use a WINE tool to avoid problems.
+
+....and in my-wine-game/dosdevices you will see links and com ports, as well as a CD drive if you have one.
+```c:->../drive_c
+com1->/dev/ttyS0
+com2->/dev/ttyS1
+com3->/dev/ttyS2
+com4->/dev/ttyS3
+com5->/dev/ttyS4
+com6->/dev/ttyS5
+com7->/dev/ttyS6
+com8->/dev/ttyS7
+com9->/dev/ttyS8
+d:->/dev/sr0
+z:->/```
 
 <div id='creatingprefixes' />
 
