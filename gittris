@@ -16,10 +16,10 @@ function update_lutris {
 if [ -d "${HOMESRC}/lutris/.git" ];then
   cd "${HOMESRC}/lutris"
   git fetch
-  if [ -z `git status --porcelain` ];then
-    echo "Lutris already up to date"
-    return
-  fi
+  #if [ -z `git status --porcelain` ];then
+  #  echo "Lutris already up to date"
+  #  return
+  #fi
   if [ $? -ne 0 ];then
     echo "git fetch failure - the repo might have disabled anonymous fetching, e.g. require you to set user.name and user.email"
     echo "update your git global config"
@@ -54,10 +54,10 @@ function update_umu {
 if [ -d "${HOMESRC}/umu-launcher/.git" ];then
   cd "${HOMESRC}/umu-launcher"
   git fetch
-  if [ -z `git status --porcelain` ];then
-    echo "Umu-launcher already up to date"
-    return
-  fi
+  #if [ -z `git status --porcelain` ];then
+  #  echo "Umu-launcher already up to date"
+  #  return
+  #fi
   echo "Running clean (quietly)"
   make clean 1>>/dev/null
   rm -rf ${HOMESRC}/umu-launcher/usr
