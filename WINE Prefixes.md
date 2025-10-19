@@ -72,10 +72,12 @@ my-wine-game/drive_c/users
 my-wine-game/drive_c/openxr
 my-wine-game/drive_c/windows
 my-wine-game/drive_c/Games
-my-wine-game/drive_c/Program Files```
-You can copy files straight into those directories if you need to, but remember that it is "Windows" so you should use a WINE tool to avoid problems.
+my-wine-game/drive_c/Program Files
+```
 
+You can copy files straight into those directories if you need to, but remember that it is "Windows" so you should use a WINE tool to avoid problems.
 ....and in my-wine-game/dosdevices you will see links and com ports, as well as a CD drive if you have one.
+
 ```c:->../drive_c
 com1->/dev/ttyS0
 com2->/dev/ttyS1
@@ -87,7 +89,8 @@ com7->/dev/ttyS6
 com8->/dev/ttyS7
 com9->/dev/ttyS8
 d:->/dev/sr0
-z:->/```
+z:->/
+```
 
 <div id='creatingprefixes' />
 
