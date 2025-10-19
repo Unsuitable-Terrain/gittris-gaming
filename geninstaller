@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### geninstaller - generates a generic YAML install file for WINE games
+### geninstaller - generates a generic YAML install file for WINE games for use with Lutris
 
 ### TODO
 ## So many things are possible, but at some point you'll end up reinventing Lutris
