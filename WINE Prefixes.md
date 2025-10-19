@@ -62,7 +62,7 @@ In short? A prefix is just a directory with supporting files in it, so it looks 
 - **dosdevices** - symbolic links that mimic Windows drives and devices in here are made available inside the prefix
 
 Here's an example, where the Prefix has been set up and has some familiar Windows directories: -
-```[user@workstation WINE]$ find my-wine-game -maxdepth 2 -type d
+```
 my-wine-game
 my-wine-game/drive_c
 my-wine-game/drive_c/vrclient
@@ -78,7 +78,8 @@ my-wine-game/drive_c/Program Files
 You can copy files straight into those directories if you need to, but remember that it is "Windows" so you should use a WINE tool to avoid problems.
 ....and in my-wine-game/dosdevices you will see links and com ports, as well as a CD drive if you have one.
 
-```c:->../drive_c
+```
+c:->../drive_c
 com1->/dev/ttyS0
 com2->/dev/ttyS1
 com3->/dev/ttyS2
@@ -95,7 +96,12 @@ z:->/
 <div id='creatingprefixes' />
 
 ## *How do I create a WINE prefix?*
-The most basic way is to create a new directory, set the variable WINEPREFIX to that directory, then execute any wine command (which will trigger a wineboot to prepare the prefix if it hasn't been done before.)
+The most basic steps:
+1. create a new directory
+2. set the variable WINEPREFIX to that directory
+3. execute any wine command
+
+...which will trigger a wineboot to prepare the prefix if it hasn't been done before.
 
 For example, this will create a new prefix
 ```
